@@ -159,6 +159,7 @@ void
 RenderTarget::draw()
 {
 	assert(mVAO && mVBO && mEBO && "OpenGL objects not initialized.");
+	const int textureUnit = 0;
 
 	if (!mChannelList)
 	{
@@ -175,7 +176,9 @@ RenderTarget::draw()
 
 	Shader::bind(&mShader);
 	ShaderUniform projection = mShader.getUniform("Projection");
-	ShaderUniform texture = mShader.getUniform("Texture");
+	ShaderUniform sampler = mShader.getUniform("Texture");
+
+	sampler.set(textureUnit);
 	projection.set(mCamera.getTransform());
 
 	glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
@@ -216,7 +219,7 @@ RenderTarget::draw()
 		if (currentTexture != channel->texture)
 		{
 			currentTexture = channel->texture;
-			Texture::bind(channel->texture, texture);
+			Texture::bind(channel->texture, textureUnit);
 		}
 
 		// draw

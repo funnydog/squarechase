@@ -32,8 +32,6 @@ Application::Application()
 		throw std::runtime_error(error);
 	}
 
-	loadAssets();
-
 	registerViews();
 
 	// push the first view
@@ -68,6 +66,9 @@ Application::run()
 
 	// tell the target to render on the window
 	mTarget.use(mWindow);
+
+	// with a context in use we load the assets
+	loadAssets();
 
 	// game loop
 	const std::uint64_t deltaTicks = glfwGetTimerFrequency() / targetFPS;

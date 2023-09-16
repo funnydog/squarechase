@@ -47,6 +47,11 @@ Texture::create(unsigned width, unsigned height, const void *pixels, bool repeat
 	if (!mTexture)
 	{
 		glCheck(glGenTextures(1, &mTexture));
+		if (!mTexture)
+		{
+			std::cerr << "Failed to create the texture." << std::endl;
+			return false;
+		}
 	}
 
 	glCheck(glBindTexture(GL_TEXTURE_2D, mTexture));
@@ -284,19 +289,16 @@ Texture::setSmooth(bool smooth)
 }
 
 void
-Texture::bind(const Texture *texture, ShaderUniform sampler) noexcept
+Texture::bind(const Texture *texture, int textureUnit) noexcept
 {
-	// assert(sampler < 16 && "Sampler value out of bounds");
 	if (texture)
 	{
-		sampler.set(texture->mTexture);
-		glCheck(glActiveTexture(GL_TEXTURE0 + sampler.getLocation()));
+		glCheck(glActiveTexture(GL_TEXTURE0 + textureUnit));
 		glCheck(glBindTexture(GL_TEXTURE_2D, texture->mTexture));
 	}
 	else
 	{
-		sampler.set(0);
-		glCheck(glActiveTexture(GL_TEXTURE0 + sampler.getLocation()));
+		glCheck(glActiveTexture(GL_TEXTURE0 + textureUnit));
 		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 }

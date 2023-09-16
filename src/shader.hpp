@@ -21,8 +21,6 @@ public:
 	void set(const glm::mat4 &matrix);
 	void set(int value);
 
-	int getLocation() const;
-
 private:
 	int mLocation;
 };

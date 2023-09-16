@@ -29,12 +29,6 @@ ShaderUniform::set(int value)
 	glCheck(glUniform1i(mLocation, value));
 }
 
-int
-ShaderUniform::getLocation() const
-{
-	return mLocation;
-}
-
 Shader::Shader()
 	: mProgram(0)
 {
