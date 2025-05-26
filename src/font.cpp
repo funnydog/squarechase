@@ -1,11 +1,10 @@
-#include <codecvt>
 #include <iostream>
-#include <locale>
 #include <stdexcept>
 #include <string>
 
 #include "rendertarget.hpp"
 #include "font.hpp"
+#include "utility.hpp"
 
 namespace
 {
@@ -78,8 +77,8 @@ Font::draw(RenderTarget &target, glm::vec2 pos, const std::string &text, Color c
 		return;
 	}
 
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
-	for (auto codepoint: cv.from_bytes(text))
+	auto codepoints = Utility::decodeUTF8(text);
+	for (auto codepoint : codepoints)
 	{
 		getGlyph(codepoint);
 	}
@@ -93,7 +92,7 @@ Font::draw(RenderTarget &target, glm::vec2 pos, const std::string &text, Color c
 	};
 	target.setTexture(&mTexture);
 	pos.y += mLineHeight;
-	for (auto codepoint: cv.from_bytes(text))
+	for (auto codepoint : codepoints)
 	{
 		unsigned base = target.getPrimIndex(6, 4);
 		target.addIndices(base, indices + 0, indices + 6);
@@ -118,8 +117,9 @@ Font::getSize(const std::string &text) const
 {
 	float width = 0;
 	float height = 0;
-	std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> cv;
-	for (auto codepoint: cv.from_bytes(text))
+
+	auto codepoints = Utility::decodeUTF8(text);
+	for (auto codepoint : codepoints)
 	{
 		const auto &glyph = getGlyph(codepoint);
 		if (height < glyph.size.y + glyph.bearing.y)
